@@ -1,15 +1,18 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from blockchain import Blockchain
+import requests
+from uuid import uuid4
 
-#Create Web App
+# Create Web App
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
-#Init blockchain
+# Init blockchain
 blockchain = Blockchain()
 
-#Send request
-@app.route('/mine_block', methods = ['GET'])
+
+# Send request
+@app.route('/mine_block', methods=['GET'])
 def mine_block():
     prev_block = blockchain.get_last_block()
     proof = blockchain.proof_of_work(prev_block['proof'])
@@ -24,13 +27,15 @@ def mine_block():
     }
     return jsonify(response), 200
 
-@app.route('/get_chain', methods = ['GET'])
+
+@app.route('/get_chain', methods=['GET'])
 def get_chain():
     response = {
         'chain': blockchain.chain,
         'length': len(blockchain.chain)
     }
     return jsonify(response), 200
+
 
 @app.route('/is_valid', methods=['GET'])
 def is_chain_valid():
@@ -41,5 +46,6 @@ def is_chain_valid():
     }
     return jsonify(response), 200
 
-#run server
-app.run(host = '0.0.0.0', port = 5000)
+
+# run server
+app.run(host='0.0.0.0', port=5000)
